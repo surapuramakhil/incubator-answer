@@ -21,12 +21,17 @@ package tag
 
 import (
 	"context"
+
 	"github.com/apache/incubator-answer/internal/base/data"
 	"github.com/apache/incubator-answer/internal/base/handler"
 	"github.com/apache/incubator-answer/internal/base/reason"
 	"github.com/apache/incubator-answer/internal/entity"
 	tagcommon "github.com/apache/incubator-answer/internal/service/tag_common"
 	"github.com/apache/incubator-answer/internal/service/unique"
+	"github.com/segmentfault/pacman/log"
+
+	// "github.com/apache/incubator-answer/pkg/obj"
+	"github.com/apache/incubator-answer/pkg/obj"
 	"github.com/apache/incubator-answer/pkg/uid"
 	"github.com/segmentfault/pacman/errors"
 )
@@ -35,25 +40,27 @@ import (
 type tagRelRepo struct {
 	data         *data.Data
 	uniqueIDRepo unique.UniqueIDRepo
-	uniqueIDService unique.UniqueIDService
 }
 
 // NewTagRelRepo new repository
 func NewTagRelRepo(data *data.Data,
-	uniqueIDRepo unique.UniqueIDRepo,
-	uniqueIDService unique.UniqueIDService,) tagcommon.TagRelRepo {
+	uniqueIDRepo unique.UniqueIDRepo,) tagcommon.TagRelRepo {
 	return &tagRelRepo{
 		data:         data,
 		uniqueIDRepo: uniqueIDRepo,
-		uniqueIDService: uniqueIDService,
 	}
 }
 
 // AddTagRelList add tag list
 func (tr *tagRelRepo) AddTagRelList(ctx context.Context, tagList []*entity.TagRel) (err error) {
 	for _, item := range tagList {
+		log.Infof("id before deshort: %s", item.ObjectID)
 		item.ObjectID = uid.DeShortID(item.ObjectID)
-		item.ObjectType, _ = tr.uniqueIDService.GetObjectType(item.ObjectID)
+		log.Infof("id after  deshort: %s", item.ObjectID)
+		item.ObjectType, err = obj.GetObjectTypeNumberByObjectID(item.ObjectID)
+		if err != nil {
+			log.Errorf("unable to extract object type - resulted in error %s", err)
+		}
 	}
 	_, err = tr.data.DB.Context(ctx).Insert(tagList)
 	if err != nil {
