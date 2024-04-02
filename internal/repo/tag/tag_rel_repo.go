@@ -40,6 +40,7 @@ import (
 type tagRelRepo struct {
 	data         *data.Data
 	uniqueIDRepo unique.UniqueIDRepo
+	uniqueIDService unique.UniqueIDService
 }
 
 // NewTagRelRepo new repository

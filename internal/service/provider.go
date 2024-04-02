@@ -20,6 +20,7 @@
 package service
 
 import (
+	"github.com/apache/incubator-answer/internal/service/unique"
 	"github.com/apache/incubator-answer/internal/service/action"
 	"github.com/apache/incubator-answer/internal/service/activity"
 	"github.com/apache/incubator-answer/internal/service/activity_common"
