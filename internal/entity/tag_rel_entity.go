@@ -33,7 +33,7 @@ type TagRel struct {
 	CreatedAt time.Time `xorm:"created TIMESTAMP created_at"`
 	UpdatedAt time.Time `xorm:"updated TIMESTAMP updated_at"`
 	ObjectID  string    `xorm:"not null INDEX UNIQUE(s) BIGINT(20) object_id"`
-	// ObjectType int       `xorm:"not null INDEX UNIQUE(s) INT(11) object_type"`
+	ObjectType int       `xorm:"not null INDEX UNIQUE(s) INT(11) object_type"`
 	TagID  string `xorm:"not null INDEX UNIQUE(s) BIGINT(20) tag_id"`
 	Status int    `xorm:"not null default 1 INT(11) status"`
 }
